@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\{
+    HomeController, 
+    ProductController, 
+    CategoryController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', [HomeController::class, 'index']);
+
+Route::prefix('product')->group(function () {
+    Route::post('store', [ProductController::class, 'store'])->name('product-store');
+    Route::post('update/{id}', [ProductController::class, 'update'])->name('product-update');
+    Route::post('destroy/{id}', [ProductController::class, 'destroy'])->name('product-destroy');
+});
+
+Route::prefix('category')->group(function () {
+    Route::post('store', [CategoryController::class, 'store'])->name('category-store');
+    Route::post('update/{id}', [CategoryController::class, 'update'])->name('category-update');
+    Route::post('destroy/{id}', [CategoryController::class, 'destroy'])->name('category-destroy');
 });

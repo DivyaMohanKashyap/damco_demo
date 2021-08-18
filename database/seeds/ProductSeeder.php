@@ -1,7 +1,6 @@
 <?php
 
-namespace Database\Seeders;
-
+use App\Services\ImportService;
 use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
@@ -11,8 +10,8 @@ class ProductSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(ImportService $importService)
     {
-        //
+        return $importService->import();
     }
 }
