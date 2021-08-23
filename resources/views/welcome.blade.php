@@ -2,157 +2,364 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PRODUCTS</title>
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>DAMCO : CRUD CODEING ASSESSMENT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="taggableInput.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="taggableInput.js"></script>
+    <script src="script.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h4>Bootstrap Snipp for Datatable</h4>
-                <div class="table-responsive">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="product-tab" data-toggle="tab" href="#product" role="tab"
+                aria-controls="product" aria-selected="true">Product</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="category-tab" data-toggle="tab" href="#category" role="tab" aria-controls="category"
+                aria-selected="false">category</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
 
+        <div class="container-xl tab-pane fade show active" id="product" role="tabpanel" aria-labelledby="product-tab">
+            <div class="table-responsive">
+                
+                @if(!$errors->all)
+                    <div class="alert alert-danger">
+                        @foreach ($errors->all() as $message) {
+                        {{ $message }}
+                        @endforeach
+                    </div>
+                @endif
 
-                    <table id="mytable" class="table table-bordred table-striped">
-
+                <div class="table-wrapper">
+                    <div class="table-title">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h2>Manage <b>Prooducts</b></h2>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="#addProductModal" class="btn btn-success" data-toggle="modal"><i
+                                        class="material-icons">&#xE147;</i> <span>Add New Prooduct</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-hover">
                         <thead>
-
-                            <th><input type="checkbox" id="checkall" /></th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Address</th>
-                            <th>Email</th>
-                            <th>Contact</th>
-                            <th>Edit</th>
-
-                            <th>Delete</th>
+                            <tr>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
                         </thead>
                         <tbody>
+                            @foreach ($products as $product)
 
-                            <tr>
-                                <td><input type="checkbox" class="checkthis" /></td>
-                                <td>Mohsin</td>
-                                <td>Irshad</td>
-                                <td>CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan</td>
-                                <td>isometric.mohsin@gmail.com</td>
-                                <td>+923335586757</td>
-                                <td>
-                                    <p data-placement="top" data-toggle="tooltip" title="Edit"><button
-                                            class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal"
-                                            data-target="#edit"><span
-                                                class="glyphicon glyphicon-pencil"></span></button></p>
-                                </td>
-                                <td>
-                                    <p data-placement="top" data-toggle="tooltip" title="Delete"><button
-                                            class="btn btn-danger btn-xs" data-title="Delete" data-toggle="modal"
-                                            data-target="#delete"><span
-                                                class="glyphicon glyphicon-trash"></span></button></p>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ $product->categories->implode('name', ', ') }}</td>
+                                    <td>{{ $product->sku }}</td>
+                                    <td>{{ $product->price }}</td>
+                                    <td>{{ $product->updated_at->format('H:i A, d-m-Y') }}</td>
+                                    <td>
+                                        <a href="#editProductModal-{{ $product->id }}" class="edit" data-toggle="modal"><i
+                                                class="material-icons" data-toggle="tooltip"
+                                                title="Edit">&#xE254;</i></a>
+                                        <a href="#deleteProductModal-{{ $product->id }}" class="delete" data-toggle="modal"><i
+                                                class="material-icons" data-toggle="tooltip"
+                                                title="Delete">&#xE872;</i></a>
+                                        <!-- Delete Product -->
+                                        <div id="deleteProductModal-{{ $product->id }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('product-destroy', $product->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Delete Product</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete these Records?</p>
+                                                            <p class="text-warning"><small>This action cannot be
+                                                                    undone.</small>
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-default"
+                                                                data-dismiss="modal" value="CANCEL">
+                                                            <input type="submit" class="btn btn-danger" value="DELETE">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Edit Product -->
+                                        <div id="editProductModal-{{ $product->id }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    
+                                                    <form action="{{ route('product-update', $product->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Edit Product</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">&times;</button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>Name</label>
+                                                                <input type="text" class="form-control" name="name"
+                                                                    value="{{ $product->name }}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>SKU</label>
+                                                                <input class="form-control" name="sku" value="{{ $product->sku }}" required>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label>Price</label>
+                                                                <input type="text" name="price" class="form-control"
+                                                                   value="{{ $product->price }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-default"
+                                                                data-dismiss="modal" value="CANCEL">
+                                                            <input type="submit" class="btn btn-info" value="SAVE">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            @endforeach
 
                         </tbody>
-
                     </table>
-
-                    <div class="clearfix"></div>
-                    
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-
-    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
-                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-                    <h4 class="modal-title custom_align" id="Heading">Edit Your Detail</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <input class="form-control " type="text" placeholder="Mohsin">
-                    </div>
-                    <div class="form-group">
-
-                        <input class="form-control " type="text" placeholder="Irshad">
-                    </div>
-                    <div class="form-group">
-                        <textarea rows="2" class="form-control"
-                            placeholder="CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan"></textarea>
-
-
+                    <div class="clearfix">
+                        <div class="hint-text">Showing <b>{{ $products->count() }}</b> entries</div>
+                        {{ $products->links() }}
                     </div>
                 </div>
-                <div class="modal-footer ">
-                    <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span
-                            class="glyphicon glyphicon-ok-sign"></span> Update</button>
+            </div>
+
+
+
+            <!-- Add Product -->
+            <div id="addProductModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="{{ route('product-store') }}" method="POST">
+                            @csrf
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Product</h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <input id="form-tags-1" type="text" class="form-control" name="categories" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>SKU</label>
+                                    <input class="form-control" name="sku" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Price</label>
+                                    <input type="text" name="price" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-default" data-dismiss="modal" value="CANCEL">
+                                <input type="submit" class="btn btn-success" value="SAVE">
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <!-- /.modal-content -->
+
         </div>
-        <!-- /.modal-dialog -->
-    </div>
 
+        <div class="container-xl tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
+            <div class="table-responsive">
+                <div class="table-wrapper">
+                    <div class="table-title">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h2>Manage <b>Categories</b></h2>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="#addCategoryModal" class="btn btn-success" data-toggle="modal"><i
+                                        class="material-icons">&#xE147;</i> <span>Add New Category</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-hover table-nowrap">
+                        <thead>
+                            <tr>
+                                <th width="30%">Name</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($category as $categoryItem)
 
+                                <tr>
+                                    <td>{{ $categoryItem->name }}</td>
+                                    <td>{{ $categoryItem->updated_at->format('H:i A, d-m-Y') }}</td>
+                                    <td>
+                                        <a href="#editCategoryModal-{{ $categoryItem->id }}" class="edit" data-toggle="modal"><i
+                                                class="material-icons" data-toggle="tooltip"
+                                                title="Edit">&#xE254;</i></a>
+                                        <a href="#deleteCategoryModal-{{ $categoryItem->id }}" class="delete" data-toggle="modal"><i
+                                                class="material-icons" data-toggle="tooltip"
+                                                title="Delete">&#xE872;</i></a>
+                                        <!-- Delete Category -->
+                                        <div id="deleteCategoryModal-{{ $categoryItem->id }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('category-destroy', $categoryItem->id) }}" method="POST">
+                                                        @csrf
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Delete Category</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">&times;</button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Are you sure you want to delete these Records?</p>
+                                                            <p class="text-warning"><small>This action cannot be
+                                                                    undone.</small>
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-default"
+                                                                data-dismiss="modal" value="CANCEL">
+                                                            <input type="submit" class="btn btn-danger" value="REMOVE">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
 
-    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
-                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-                    <h4 class="modal-title custom_align" id="Heading">Delete this entry</h4>
-                </div>
-                <div class="modal-body">
+                                        <!-- Edit Category -->
+                                        <div id="editCategoryModal-{{ $categoryItem->id }}" class="modal fade">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="POST" action="{{ route('category-update', $categoryItem->id) }}">
+                                                        @csrf
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title">Edit Category</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-hidden="true">&times;</button>
+                                                        </div>
 
-                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Are you sure
-                        you want to delete this Record?</div>
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label>Name</label>
+                                                                <input type="text" class="form-control" name="name"
+                                                                    value="{{ $categoryItem->name }}" required>
+                                                            </div>
 
-                </div>
-                <div class="modal-footer ">
-                    <button type="button" class="btn btn-success"><span
-                            class="glyphicon glyphicon-ok-sign"></span> Yes</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><span
-                            class="glyphicon glyphicon-remove"></span> No</button>
+                                                            <div class="form-group">
+                                                                <label>Product</label>
+                                                                <select class="form-control" name="product_id" id="product_id">
+                                                                    <option>Select product</option>
+                                                                    @foreach ($products as $product)
+                                                                        <option value="{{ $product->id }}" {{ $product->id == $categoryItem->product_id ? "selected = 'selected'" : ""}}>{{ $product->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="button" class="btn btn-default"
+                                                                data-dismiss="modal" value="CANCEL">
+                                                            <input type="submit" class="btn btn-info" value="UPDATE">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            @endforeach
+
+                        </tbody>
+                    </table>
+                    <div class="clearfix">
+                        <div class="hint-text">Showing <b>{{ $category->count() }}</b> entries</div>
+                        {{ $category->links() }}
+                    </div>
                 </div>
             </div>
-            <!-- /.modal-content -->
+
+
+            <!-- Add Category -->
+            <div id="addCategoryModal" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form method="POST" action="{{ route('category-store') }}">
+                            @csrf
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Category</h4>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label>Name</label>
+                                    <input type="text" class="form-control" name="name" value="{{ old('name') }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Product</label>
+                                    <select class="form-control" name="product_id" id="product_id">
+                                        <option>Select product</option>
+                                        @foreach ($products as $product)
+                                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="button" class="btn btn-default" data-dismiss="modal" value="CANCEL">
+                                <input type="submit" class="btn btn-success" value="SAVE">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <!-- /.modal-dialog -->
+
     </div>
 
-    
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!------ Include the above in your HEAD tag ---------->
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#mytable #checkall").click(function() {
-                if ($("#mytable #checkall").is(':checked')) {
-                    $("#mytable input[type=checkbox]").each(function() {
-                        $(this).prop("checked", true);
-                    });
-
-                } else {
-                    $("#mytable input[type=checkbox]").each(function() {
-                        $(this).prop("checked", false);
-                    });
-                }
-            });
-
-            $("[data-toggle=tooltip]").tooltip();
-        });
-    </script>
+        <link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
 </body>
 
 </html>
